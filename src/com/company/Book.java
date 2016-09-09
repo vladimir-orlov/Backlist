@@ -15,7 +15,12 @@ public class Book {
     }
 
     Book(String library, String file, int id, String author, String title){
-        new Book(library, file, id, author, title, "", "");
+        this.library = library;
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.file = file;
+//        Book(library, file, id, author, title, "", "");
     }
 
     private int id;
