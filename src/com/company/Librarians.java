@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Librarians {
     private final String pathToLibrary;
@@ -18,7 +20,7 @@ public class Librarians {
         boolean find = false;
         ArrayList<Book> books = processFilesFromFolder(F,  new ArrayList<Book>());
         for(Book book : books) {
-            if ( author.equals(book.getAuthor().trim()) && name.equals(book.getTitle().trim())) {
+            if (book.getAuthor().contains(author) && book.getTitle().contains(name)) {
               if(book.getDate().isEmpty()){
                   find = true;
                   System.out.println("FOUND " + book.print(new String[]{"id", "lib"}));
@@ -33,6 +35,25 @@ public class Librarians {
         }
     }
 
+    public void findBook(boolean author, String param){
+        File F = new File(pathToLibrary);
+        boolean find = false;
+        ArrayList<Book> books = processFilesFromFolder(F, new ArrayList<Book>());
+        for(Book book : books) {
+            if (author ? book.getAuthor().contains(param) : book.getTitle().contains(param)) {
+                if(book.getDate().isEmpty()){
+                    find = true;
+                    System.out.println("FOUND " + book.print(new String[]{"id", "lib"}));
+                } else {
+                    find = true;
+                    System.out.println("FOUNDMISSING "+book.print(new String[]{"id", "lib", "issued"}));
+                }
+            }
+        }
+        if(!find){
+            System.out.println("NOT FOUND");
+        }
+    }
 
     public void orderBook(int id, String abonent){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
@@ -42,7 +63,7 @@ public class Librarians {
         for(Book book : books) {
             if (id == book.getId()) {
                 if(book.getDate().isEmpty()){
-                    LibFactory libFactory = createLibFactory(book.getFile().split("\\.")[1]);
+                    LibFactory libFactory = createLibFactory(book.getFile());
                     BaseBookWorker library = libFactory.createLib();
                     List<Book> allBooks = library.returnAllBook(new File(book.getFile()));
                     for(Book myBook : allBooks){
@@ -74,7 +95,7 @@ public class Librarians {
         for(Book book : books) {
             if ( id == book.getId()) {
                 if(!book.getDate().isEmpty()){
-                    LibFactory libFactory = createLibFactory(book.getFile().split("\\.")[1]);
+                    LibFactory libFactory = createLibFactory(book.getFile());
                     BaseBookWorker library = libFactory.createLib();
                     List<Book> allBooks = library.returnAllBook(new File(book.getFile()));
                     for(Book myBook : allBooks){
@@ -108,17 +129,22 @@ public class Librarians {
                 processFilesFromFolder(entry, books);
                 continue;
             }
-            LibFactory libFactory = createLibFactory(entry.getName().split("\\.")[1]);
+            LibFactory libFactory = createLibFactory(entry.getName());
             BaseBookWorker library = libFactory.createLib();
             books.addAll(library.returnAllBook(entry));
         }
         return books;
     }
 
-    private LibFactory createLibFactory(String typeFile){
-        if(typeFile.equalsIgnoreCase("csv")){
+    private LibFactory createLibFactory(String file){
+        Pattern p = Pattern.compile("\\.\\w+$");
+        Matcher matcher = p.matcher(file);
+        matcher.find();
+        String typeFile = matcher.group();
+
+        if(typeFile.equalsIgnoreCase(".csv")){
             return new JavaCsvFactory();
-        } else if(typeFile.equalsIgnoreCase("properties")){
+        } else if(typeFile.equalsIgnoreCase(".properties")){
             return new JavaPropertyFactory();
         } else {
             throw new RuntimeException(typeFile + " is unknown typeFile.");

@@ -56,7 +56,6 @@ public class Book {
         return "lib:"+library+"; file:"+file+"; id:"+id+"; author:"+author+"; title:"+title+"; date:"+date+"; sub:"+subscriber;
     }
 
-    //TODO correct list of setters and getters
     public int getId() {
         return id;
     }

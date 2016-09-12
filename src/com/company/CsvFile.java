@@ -1,9 +1,6 @@
 package com.company;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +11,6 @@ public class CsvFile implements BaseBookWorker {
         String line = "";
         String cvsSplitBy = ",";
 
-        //TODO написать по нормальному, без ограничения по цифрам
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             while ((line = br.readLine()) != null) {
                 String[] book = line.split(cvsSplitBy);
@@ -22,10 +18,12 @@ public class CsvFile implements BaseBookWorker {
                     books.add(new Book(csvFile.getParent(), csvFile.getAbsolutePath(), Integer.parseInt(book[0]), book[1], book[2], book[3], book[4]));
                 } else if(book.length == 3){
                     books.add(new Book(csvFile.getParent(), csvFile.getAbsolutePath(), Integer.parseInt(book[0]), book[1], book[2]));
+                } else {
+                    System.out.println("File " + csvFile.getName() + " have wrong structure in line:\n" + line);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Problem with reading file:\n" + e.toString());
         }
         return books;
     }
@@ -41,6 +39,10 @@ public class CsvFile implements BaseBookWorker {
             builder.append(book.getSubscriber() + "\n");
         }
 
-        TextFile.write(filename, builder.toString());
+        try(PrintWriter out = new PrintWriter(new File(filename).getAbsoluteFile())){
+            out.print(builder.toString());
+        } catch (IOException e) {
+            System.out.println("Problem with writing to file:\n" + e.toString());
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.company;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -18,10 +19,11 @@ public class PropertyFile implements BaseBookWorker {
             int id = Integer.parseInt(property.getProperty("Index"));
             String author = property.getProperty("Author");
             String title = property.getProperty("Name");
-            String subscriber = property.getProperty("Issued");
-            String date = property.getProperty("Issuedto");
+            String date = property.getProperty("Issued");
+            String subscriber = property.getProperty("Issuedto");
             book.add(new Book(propertyFile.getParent(), propertyFile.getAbsolutePath(), id, author, title, date, subscriber));
         } catch (IOException e) {
+            System.out.println("Problem with reading .property file:");
             e.printStackTrace();
         }
         return book;
@@ -35,12 +37,17 @@ public class PropertyFile implements BaseBookWorker {
         StringBuilder builder = new StringBuilder();
         Book book = books.get(0);
 
-        builder.append("Index="+book.getId());
-        builder.append("Author="+book.getAuthor());
-        builder.append("Name="+book.getTitle());
-        builder.append("Issued="+book.getDate());
+        builder.append("Index="+book.getId()+"\n");
+        builder.append("Author="+book.getAuthor()+"\n");
+        builder.append("Name="+book.getTitle()+"\n");
+        builder.append("Issued="+book.getDate()+"\n");
         builder.append("Issuedto="+book.getSubscriber());
 
-        TextFile.write(filename, builder.toString());
+        try(PrintWriter out = new PrintWriter(new File(filename).getAbsoluteFile())){
+            out.print(builder.toString());
+        } catch (IOException e) {
+            System.out.println("Problem with writing to .property file:");
+            e.printStackTrace();
+        }
     }
 }
