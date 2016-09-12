@@ -15,12 +15,7 @@ public class Book {
     }
 
     Book(String library, String file, int id, String author, String title){
-        this.library = library;
-        this.id = id;
-        this.author = author;
-        this.title = title;
-        this.file = file;
-//        Book(library, file, id, author, title, "", "");
+        this(library, file, id, author, title, "", "");
     }
 
     private int id;
@@ -41,10 +36,6 @@ public class Book {
         fields.put("lib", library);
         fields.put("file", file);
         return fields;
-    }
-
-    public String toStringWithLibrary(){
-        return "id = " + id + "; lib= " + library;
     }
 
     public String print(String... params){
@@ -84,5 +75,17 @@ public class Book {
 
     public String getSubscriber() {
         return subscriber;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setSubscriber(String subscriber) {
+        this.subscriber = subscriber;
     }
 }

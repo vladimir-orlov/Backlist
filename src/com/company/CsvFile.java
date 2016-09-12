@@ -17,13 +17,11 @@ public class CsvFile implements BaseBookWorker {
         //TODO написать по нормальному, без ограничения по цифрам
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             while ((line = br.readLine()) != null) {
-                System.out.println("readLine = [" + line + "]");
                 String[] book = line.split(cvsSplitBy);
-                System.out.println("book: ----" + book[0] + book[1] + book[2]);
                 if(book.length == 5){
-                    books.add(new Book(csvFile.getParent(), csvFile.getName(), Integer.parseInt(book[0]), book[1], book[2], book[3], book[4]));
+                    books.add(new Book(csvFile.getParent(), csvFile.getAbsolutePath(), Integer.parseInt(book[0]), book[1], book[2], book[3], book[4]));
                 } else if(book.length == 3){
-                    books.add(new Book(csvFile.getParent(), csvFile.getName(), Integer.parseInt(book[0]), book[1], book[2]));
+                    books.add(new Book(csvFile.getParent(), csvFile.getAbsolutePath(), Integer.parseInt(book[0]), book[1], book[2]));
                 }
             }
         } catch (IOException e) {

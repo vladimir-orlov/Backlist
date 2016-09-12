@@ -1,55 +1,25 @@
 package com.company;
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class Librarians implements Librarian {
-    /*
-* in: FIND [author=<автор>] [name=<bookname>]
-* out: FOUND id=<индекс1> lib=<библиотека1>
-*      FOUNDMISSING id=<индекс1> lib=<библиотека1> issued=<дата выдачи1>
-*      NOTFOUND
-* */
-    @Override
-    public String findBook(String... params) {
-        findBook(params[1].split("=")[1], params[2].split("=")[1]);
-        return null;
+public class Librarians {
+    private final String pathToLibrary;
+
+    public Librarians(String pathToLibrary) {
+        this.pathToLibrary = pathToLibrary;
     }
 
-    /*
-* in: ORDER id=<индекс> abonent=<имя абонента>
-* out: OK abonent=<имя абонента> date= <текущая дата>
-*      RESERVED abonent=<имя абонента> date= <текущая дата>
-*      NOTFOUND
-* */
-    @Override
-    public String orderBook(String... params) {
-
-
-        return null;
-    }
-
-    /*
-* in: RETURN id=<индекс>
-* out: OK abonent=<имя абонента>
-*      ALREADYRETURNED
-*      NOTFOUND
-* */
-    @Override
-    public String returnBook(String... params) {
-        return null;
-    }
-
-    public static void findBook(String author, String name){
-        File F = new File("Library");
+    public void findBook(String author, String name){
+        File F = new File(pathToLibrary);
         boolean find = false;
         ArrayList<Book> books = processFilesFromFolder(F,  new ArrayList<Book>());
         for(Book book : books) {
             if ( author.equals(book.getAuthor().trim()) && name.equals(book.getTitle().trim())) {
-              if(book.getDate() == null){
+              if(book.getDate().isEmpty()){
                   find = true;
                   System.out.println("FOUND " + book.print(new String[]{"id", "lib"}));
               } else {
@@ -64,25 +34,32 @@ public class Librarians implements Librarian {
     }
 
 
-    public static void orderBook(String id, String abonent){
-       //TODO отправить путь в константы, продумать название библиотек
-
-        File F = new File("Library");
+    public void orderBook(int id, String abonent){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
+        File F = new File(pathToLibrary);
         boolean find = false;
         ArrayList<Book> books = processFilesFromFolder(F,  new ArrayList<Book>());
         for(Book book : books) {
-            if ( id.equals(book.getId())) {
-                if(book.getDate() == null){
-                    //TODO делаем заказ, сделать нормальный формат даты.
-
-
-
+            if (id == book.getId()) {
+                if(book.getDate().isEmpty()){
+                    LibFactory libFactory = createLibFactory(book.getFile().split("\\.")[1]);
+                    BaseBookWorker library = libFactory.createLib();
+                    List<Book> allBooks = library.returnAllBook(new File(book.getFile()));
+                    for(Book myBook : allBooks){
+                        if(id == myBook.getId()){
+                            myBook.setSubscriber(abonent);
+                            myBook.setDate(formatter.format(new Date()));
+                            break;
+                        }
+                    }
+                    library.writeChanges(book.getFile(), allBooks);
                     find = true;
-                    System.out.println("OK " + abonent + new Date().toString());
+                    System.out.println("OK " + "abonent=" + abonent + " date=" + formatter.format(new Date()));
                 } else {
                     find = true;
-                    System.out.println("RESERVED "+book.print(new String[]{"abonent"} + new Date().toString()));
+                    System.out.println("RESERVED "+ "abonent=" + book.getSubscriber() + " date=" + formatter.format(new Date()));
                 }
+                break;
             }
         }
         if(!find){
@@ -90,24 +67,31 @@ public class Librarians implements Librarian {
         }
     }
 
-
-    public static void returnBook(String id){
-        File F = new File("Library");
+    public void returnBook(int id){
+        File F = new File(pathToLibrary);
         boolean find = false;
         ArrayList<Book> books = processFilesFromFolder(F,  new ArrayList<Book>());
         for(Book book : books) {
-            if ( id.equals(book.getId())) {
-                if(book.getDate() != null){
-                    //TODO делаем возврат, сделать нормальный формат даты.
-
-
-
+            if ( id == book.getId()) {
+                if(!book.getDate().isEmpty()){
+                    LibFactory libFactory = createLibFactory(book.getFile().split("\\.")[1]);
+                    BaseBookWorker library = libFactory.createLib();
+                    List<Book> allBooks = library.returnAllBook(new File(book.getFile()));
+                    for(Book myBook : allBooks){
+                        if(id == myBook.getId()){
+                            myBook.setSubscriber("");
+                            myBook.setDate("");
+                            break;
+                        }
+                    }
+                    library.writeChanges(book.getFile(), allBooks);
                     find = true;
                     System.out.println("OK " + book.print(new String[]{"abonent"}));
                 } else {
                     find = true;
                     System.out.println("ALREADY RETURNED");
                 }
+                break;
             }
         }
         if(!find){
@@ -115,7 +99,7 @@ public class Librarians implements Librarian {
         }
     }
 
-    public static ArrayList<Book> processFilesFromFolder(File folder, ArrayList<Book> books) {
+    private ArrayList<Book> processFilesFromFolder(File folder, ArrayList<Book> books) {
         File[] folderEntries = folder.listFiles();
         for (File entry : folderEntries)
         {
@@ -131,7 +115,7 @@ public class Librarians implements Librarian {
         return books;
     }
 
-    public static LibFactory createLibFactory(String typeFile){
+    private LibFactory createLibFactory(String typeFile){
         if(typeFile.equalsIgnoreCase("csv")){
             return new JavaCsvFactory();
         } else if(typeFile.equalsIgnoreCase("properties")){

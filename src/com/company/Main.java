@@ -1,7 +1,5 @@
 package com.company;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -12,29 +10,51 @@ public class Main {
         while(true) {
             Scanner in = new Scanner(System.in);
             String[] line = in.nextLine().split(" ");
-            Librarians user = new Librarians();
-            switch (line[0]){
-                case "FIND":
-                    user.findBook(line);
-                    break;
-                case "ORDER":
-                    user.orderBook(line);
-                    break;
-                case "RETURN":
-                    user.returnBook(line);
-                    break;
-                case "EXIT":
-                    System.out.println("EXIT");
-                    return;
-                default:
-                    System.out.println("SYNTAXERROR");
-                    break;
+            Librarians user = new Librarians("Library");
+            try {
+                switch (line[0]) {
+                /*
+                * in: FIND [author=<автор>] [name=<bookname>]
+                * out: FOUND id=<индекс1> lib=<библиотека1>
+                *      FOUNDMISSING id=<индекс1> lib=<библиотека1> issued=<дата выдачи1>
+                *      NOTFOUND
+                * */
+                    case "FIND":
+                        user.findBook(line[1].split("=")[1], line[2].split("=")[1]);
+                        break;
+                /*
+                * in: ORDER id=<индекс> abonent=<имя абонента>
+                * out: OK abonent=<имя абонента> date= <текущая дата>
+                *      RESERVED abonent=<имя абонента> date= <текущая дата>
+                *      NOTFOUND
+                * */
+                    case "ORDER":
+                        user.orderBook(Integer.parseInt(line[1].split("=")[1]), line[2].split("=")[1]);
+                        break;
+                /*
+                * in: RETURN id=<индекс>
+                * out: OK abonent=<имя абонента>
+                *      ALREADYRETURNED
+                *      NOTFOUND
+                * */
+                    case "RETURN":
+                        user.returnBook(Integer.parseInt(line[1].split("=")[1]));
+                        break;
+                    case "EXIT":
+                        System.out.println("EXIT");
+                        return;
+                    default:
+                        System.out.println("SYNTAXERROR");
+                        break;
+                }
+            } catch (RuntimeException e){
+                System.out.println("SYNTAXERROR");
             }
         }
     }
 
 
-
+//TODO rewrite method
 //    public static void find(String param){
 //        File F = new File("Library");
 //        ArrayList<Book> books = processFilesFromFolder(F);
@@ -54,23 +74,4 @@ public class Main {
 //            }
 //        }
 //    }
-
-//    public static ArrayList<Book> processFilesFromFolder(File folder) {
-//        File[] folderEntries = folder.listFiles();
-//        ArrayList<Book> books = new ArrayList<>();
-//        for (File entry : folderEntries)
-//        {
-//            if (entry.isDirectory())
-//            {
-//                processFilesFromFolder(entry);
-//                continue;
-//            }
-//            LibFactory libFactory = createLibFactory(entry.getName().split(".")[1]);
-//            BaseBookWorker library = libFactory.createLib();
-//            books.addAll(library.returnAllBook(entry));
-//        }
-//        return books;
-//    }
-
-
 }
