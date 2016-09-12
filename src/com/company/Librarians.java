@@ -16,9 +16,9 @@ public class Librarians {
     }
 
     public void findBook(String author, String name){
-        File F = new File(pathToLibrary);
+        File file = new File(pathToLibrary);
         boolean find = false;
-        ArrayList<Book> books = processFilesFromFolder(F,  new ArrayList<Book>());
+        ArrayList<Book> books = processFilesFromFolder(file,  new ArrayList<Book>());
         for(Book book : books) {
             if (book.getAuthor().contains(author) && book.getTitle().contains(name)) {
               if(book.getDate().isEmpty()){
@@ -36,9 +36,9 @@ public class Librarians {
     }
 
     public void findBook(boolean author, String param){
-        File F = new File(pathToLibrary);
+        File file = new File(pathToLibrary);
         boolean find = false;
-        ArrayList<Book> books = processFilesFromFolder(F, new ArrayList<Book>());
+        ArrayList<Book> books = processFilesFromFolder(file, new ArrayList<Book>());
         for(Book book : books) {
             if (author ? book.getAuthor().contains(param) : book.getTitle().contains(param)) {
                 if(book.getDate().isEmpty()){
@@ -59,28 +59,25 @@ public class Librarians {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
         File F = new File(pathToLibrary);
         boolean find = false;
-        ArrayList<Book> books = processFilesFromFolder(F,  new ArrayList<Book>());
-        for(Book book : books) {
-            if (id == book.getId()) {
-                if(book.getDate().isEmpty()){
-                    LibFactory libFactory = createLibFactory(book.getFile());
-                    BaseBookWorker library = libFactory.createLib();
-                    List<Book> allBooks = library.returnAllBook(new File(book.getFile()));
-                    for(Book myBook : allBooks){
-                        if(id == myBook.getId()){
-                            myBook.setSubscriber(abonent);
-                            myBook.setDate(formatter.format(new Date()));
-                            break;
-                        }
+        ArrayList<String> files = returnAllFilesFromFolder(F,  new ArrayList<String>());
+        a: for(String file : files) {
+            LibFactory libFactory = createLibFactory(file);
+            BaseBookWorker library = libFactory.createLib();
+            List<Book> allBooks = library.returnAllBook(new File(file));
+            for(Book book : allBooks){
+                if (id == book.getId()) {
+                    if(book.getDate().isEmpty()){
+                        book.setSubscriber(abonent);
+                        book.setDate(formatter.format(new Date()));
+                        library.writeChanges(file, allBooks);
+                        find = true;
+                        System.out.println("OK " + "abonent=" + abonent + " date=" + formatter.format(new Date()));
+                    } else {
+                        find = true;
+                        System.out.println("RESERVED "+ "abonent=" + book.getSubscriber() + " date=" + formatter.format(new Date()));
                     }
-                    library.writeChanges(book.getFile(), allBooks);
-                    find = true;
-                    System.out.println("OK " + "abonent=" + abonent + " date=" + formatter.format(new Date()));
-                } else {
-                    find = true;
-                    System.out.println("RESERVED "+ "abonent=" + book.getSubscriber() + " date=" + formatter.format(new Date()));
+                    break a;
                 }
-                break;
             }
         }
         if(!find){
@@ -91,28 +88,25 @@ public class Librarians {
     public void returnBook(int id){
         File F = new File(pathToLibrary);
         boolean find = false;
-        ArrayList<Book> books = processFilesFromFolder(F,  new ArrayList<Book>());
-        for(Book book : books) {
-            if ( id == book.getId()) {
-                if(!book.getDate().isEmpty()){
-                    LibFactory libFactory = createLibFactory(book.getFile());
-                    BaseBookWorker library = libFactory.createLib();
-                    List<Book> allBooks = library.returnAllBook(new File(book.getFile()));
-                    for(Book myBook : allBooks){
-                        if(id == myBook.getId()){
-                            myBook.setSubscriber("");
-                            myBook.setDate("");
-                            break;
-                        }
+        ArrayList<String> files = returnAllFilesFromFolder(F, new ArrayList<>());
+        a: for(String file : files) {
+            LibFactory libFactory = createLibFactory(file);
+            BaseBookWorker library = libFactory.createLib();
+            List<Book> allBooks = library.returnAllBook(new File(file));
+            for(Book book : allBooks){
+                if (id == book.getId()) {
+                    if(!book.getDate().isEmpty()){
+                        System.out.println("OK " + book.print(new String[]{"abonent"}));
+                        book.setSubscriber("");
+                        book.setDate("");
+                        library.writeChanges(file, allBooks);
+                        find = true;
+                    } else {
+                        find = true;
+                        System.out.println("ALREADY RETURNED");
                     }
-                    library.writeChanges(book.getFile(), allBooks);
-                    find = true;
-                    System.out.println("OK " + book.print(new String[]{"abonent"}));
-                } else {
-                    find = true;
-                    System.out.println("ALREADY RETURNED");
+                    break a;
                 }
-                break;
             }
         }
         if(!find){
@@ -134,6 +128,20 @@ public class Librarians {
             books.addAll(library.returnAllBook(entry));
         }
         return books;
+    }
+
+    private ArrayList<String> returnAllFilesFromFolder(File folder, ArrayList<String> files) {
+        File[] folderEntries = folder.listFiles();
+        for (File entry : folderEntries)
+        {
+            if (entry.isDirectory())
+            {
+                returnAllFilesFromFolder(entry, files);
+                continue;
+            }
+            files.add(entry.getAbsolutePath());
+        }
+        return files;
     }
 
     private LibFactory createLibFactory(String file){

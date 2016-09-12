@@ -4,18 +4,17 @@ import java.util.*;
 
 public class Book {
 
-    Book(String library, String file, int id, String author, String title, String date, String subscriber){
+    Book(String library, int id, String author, String title, String date, String subscriber){
         this.library = library;
         this.id = id;
         this.author = author;
         this.title = title;
         this.date = date;
         this.subscriber = subscriber;
-        this.file = file;
     }
 
-    Book(String library, String file, int id, String author, String title){
-        this(library, file, id, author, title, "", "");
+    Book(String library, int id, String author, String title){
+        this(library, id, author, title, "", "");
     }
 
     private int id;
@@ -24,7 +23,6 @@ public class Book {
     private String date;
     private String subscriber;
     private String library;
-    private String file;
 
     private Map getMapOfFields(){
         Map fields = new HashMap();
@@ -34,7 +32,6 @@ public class Book {
         fields.put("issued", date);
         fields.put("abonent", subscriber);
         fields.put("lib", library);
-        fields.put("file", file);
         return fields;
     }
 
@@ -53,7 +50,7 @@ public class Book {
     }
 
     public String toString(){
-        return "lib:"+library+"; file:"+file+"; id:"+id+"; author:"+author+"; title:"+title+"; date:"+date+"; sub:"+subscriber;
+        return "lib:"+library+"; id:"+id+"; author:"+author+"; title:"+title+"; date:"+date+"; sub:"+subscriber;
     }
 
     public int getId() {
@@ -74,10 +71,6 @@ public class Book {
 
     public String getSubscriber() {
         return subscriber;
-    }
-
-    public String getFile() {
-        return file;
     }
 
     public void setDate(String date) {

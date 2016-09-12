@@ -21,7 +21,7 @@ public class PropertyFile implements BaseBookWorker {
             String title = property.getProperty("Name");
             String date = property.getProperty("Issued");
             String subscriber = property.getProperty("Issuedto");
-            book.add(new Book(propertyFile.getParent(), propertyFile.getAbsolutePath(), id, author, title, date, subscriber));
+            book.add(new Book(propertyFile.getParent(), id, author, title, date, subscriber));
         } catch (IOException e) {
             System.out.println("Problem with reading .property file:");
             e.printStackTrace();

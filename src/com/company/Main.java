@@ -24,7 +24,7 @@ public class Main {
                 } else if (Pattern.matches("^EXIT$", console)) {
                     return;
                 } else {
-                    System.out.println("SYNTAXERROR");
+                    System.out.println("SYNTAX ERROR");
                 }
             }
         } catch (RuntimeException e){

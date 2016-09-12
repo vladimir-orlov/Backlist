@@ -15,9 +15,9 @@ public class CsvFile implements BaseBookWorker {
             while ((line = br.readLine()) != null) {
                 String[] book = line.split(cvsSplitBy);
                 if(book.length == 5){
-                    books.add(new Book(csvFile.getParent(), csvFile.getAbsolutePath(), Integer.parseInt(book[0]), book[1], book[2], book[3], book[4]));
+                    books.add(new Book(csvFile.getParent(), Integer.parseInt(book[0]), book[1], book[2], book[3], book[4]));
                 } else if(book.length == 3){
-                    books.add(new Book(csvFile.getParent(), csvFile.getAbsolutePath(), Integer.parseInt(book[0]), book[1], book[2]));
+                    books.add(new Book(csvFile.getParent(), Integer.parseInt(book[0]), book[1], book[2]));
                 } else {
                     System.out.println("File " + csvFile.getName() + " have wrong structure in line:\n" + line);
                 }
