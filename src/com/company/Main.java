@@ -14,7 +14,11 @@ public class Main {
                 Librarians user = new Librarians("Library");
 
                 if (Pattern.matches("^FIND (author|name)=\\w+$", console)) {
-                    user.findBook("author".equals(line[1].split("=")[0]), line[1].split("=")[1]);
+                    if("author".equals(line[1].split("=")[0])){
+                        user.findBook(line[1].split("=")[1], "");
+                    } else {
+                        user.findBook("", line[1].split("=")[1]);
+                    }
                 } else if (Pattern.matches("^FIND author=\\w+ name=\\w+$", console)) {
                     user.findBook(line[1].split("=")[1], line[2].split("=")[1]);
                 } else if (Pattern.matches("^ORDER id=\\d+ abonent=\\w+$", console)) {

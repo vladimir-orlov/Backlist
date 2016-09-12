@@ -35,26 +35,6 @@ public class Librarians {
         }
     }
 
-    public void findBook(boolean author, String param){
-        File file = new File(pathToLibrary);
-        boolean find = false;
-        ArrayList<Book> books = processFilesFromFolder(file, new ArrayList<Book>());
-        for(Book book : books) {
-            if (author ? book.getAuthor().contains(param) : book.getTitle().contains(param)) {
-                if(book.getDate().isEmpty()){
-                    find = true;
-                    System.out.println("FOUND " + book.print(new String[]{"id", "lib"}));
-                } else {
-                    find = true;
-                    System.out.println("FOUNDMISSING "+book.print(new String[]{"id", "lib", "issued"}));
-                }
-            }
-        }
-        if(!find){
-            System.out.println("NOT FOUND");
-        }
-    }
-
     public void orderBook(int id, String abonent){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
         File F = new File(pathToLibrary);
