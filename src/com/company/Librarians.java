@@ -9,14 +9,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Librarians {
-    private final String pathToLibrary;
-
-    public Librarians(String pathToLibrary) {
-        this.pathToLibrary = pathToLibrary;
-    }
+    private static final String PATH_TO_LIBRARY = "Library";
 
     public void findBook(String author, String name){
-        File file = new File(pathToLibrary);
+        File file = new File(PATH_TO_LIBRARY);
         boolean find = false;
         ArrayList<Book> books = processFilesFromFolder(file,  new ArrayList<Book>());
         for(Book book : books) {
@@ -37,7 +33,7 @@ public class Librarians {
 
     public void orderBook(int id, String abonent){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
-        File F = new File(pathToLibrary);
+        File F = new File(PATH_TO_LIBRARY);
         boolean find = false;
         ArrayList<String> files = returnAllFilesFromFolder(F,  new ArrayList<String>());
         a: for(String file : files) {
@@ -66,7 +62,7 @@ public class Librarians {
     }
 
     public void returnBook(int id){
-        File F = new File(pathToLibrary);
+        File F = new File(PATH_TO_LIBRARY);
         boolean find = false;
         ArrayList<String> files = returnAllFilesFromFolder(F, new ArrayList<>());
         a: for(String file : files) {

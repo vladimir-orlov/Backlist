@@ -1,38 +1,35 @@
 package com.company;
 
-import java.util.Scanner;
-import java.util.regex.Pattern;
+import java.util.*;
 
 public class Main {
-
     public static void main(String[] args) {
-        System.out.println("Place for command(FIND, ORDER, RETURN, EXIT):");
+        Map<String,Command> mapOFCommands = new HashMap<>();
+        mapOFCommands.put("FIND", new FindCommand());
+        mapOFCommands.put("ORDER", new OrderCommand());
+        mapOFCommands.put("RETURN", new ReturnCommand());
+        mapOFCommands.put("EXIT", new ExitCommand());
+
+
+        System.out.println(LocaleResource.getString("message.placeForCommand"));
         try(Scanner in = new Scanner(System.in);) {
             while (true) {
-                String console = in.nextLine();
-                String[] line = console.split(" ");
-                Librarians user = new Librarians("Library");
-
-                if (Pattern.matches("^FIND (author|name)=\\w+$", console)) {
-                    if("author".equals(line[1].split("=")[0])){
-                        user.findBook(line[1].split("=")[1], "");
-                    } else {
-                        user.findBook("", line[1].split("=")[1]);
-                    }
-                } else if (Pattern.matches("^FIND author=\\w+ name=\\w+$", console)) {
-                    user.findBook(line[1].split("=")[1], line[2].split("=")[1]);
-                } else if (Pattern.matches("^ORDER id=\\d+ abonent=\\w+$", console)) {
-                    user.orderBook(Integer.parseInt(line[1].split("=")[1]), line[2].split("=")[1]);
-                } else if (Pattern.matches("^RETURN id=\\d+$", console)) {
-                    user.returnBook(Integer.parseInt(line[1].split("=")[1]));
-                } else if (Pattern.matches("^EXIT$", console)) {
-                    return;
+                StringTokenizer line= new StringTokenizer(in.nextLine(), " ");
+                Commands command = new Commands();
+                String request = line.nextToken();
+                if(mapOFCommands.get(request) == null){
+                    System.out.println(LocaleResource.getString("message.syntaxError"));
                 } else {
-                    System.out.println("SYNTAX ERROR");
+                    command.setCommand(mapOFCommands.get(request));
+                    List<String> params = new ArrayList<>();
+                    while (line.hasMoreElements()) {
+                        params.add(line.nextToken());
+                    }
+                    command.executeCommand(params);
                 }
             }
-        } catch (RuntimeException e){
-            System.out.println("You should find the reason of this error:");
+        } catch (InputMismatchException e){
+            System.out.println(LocaleResource.getString("message.badPattern"));
             e.printStackTrace();
         }
     }
