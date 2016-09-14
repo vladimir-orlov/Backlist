@@ -8,86 +8,77 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//Возвращать значения
+//Константы
+//Вынести методы
+//Выкидывать ошибку
+//Совершенный код
+
 public class Librarians {
     private static final String PATH_TO_LIBRARY = "Library";
 
-    public void findBook(String author, String name){
+    public String findBook(String author, String name){
         File file = new File(PATH_TO_LIBRARY);
-        boolean find = false;
         ArrayList<Book> books = processFilesFromFolder(file,  new ArrayList<Book>());
+
         for(Book book : books) {
-            if (book.getAuthor().contains(author) && book.getTitle().contains(name)) {
-              if(book.getDate().isEmpty()){
-                  find = true;
-                  System.out.println("FOUND " + book.print(new String[]{"id", "lib"}));
+            if (contains(book.getAuthor(), author) && contains(book.getTitle(), name)) {
+              if(book.getDate() == null){
+                  return String.format(LocaleResource.getString("message.found"), book.getId(), book.getLibrary());
               } else {
-                  find = true;
-                  System.out.println("FOUNDMISSING "+book.print(new String[]{"id", "lib", "issued"}));
+                  return String.format(LocaleResource.getString("message.foundmissing"), book.getId(), book.getLibrary(), book.getDate());
               }
             }
         }
-        if(!find){
-            System.out.println("NOT FOUND");
-        }
+        return String.format(LocaleResource.getString("message.notfound"));
     }
 
-    public void orderBook(int id, String abonent){
+    public String orderBook(int id, String abonent){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
         File F = new File(PATH_TO_LIBRARY);
-        boolean find = false;
         ArrayList<String> files = returnAllFilesFromFolder(F,  new ArrayList<String>());
-        a: for(String file : files) {
+        for(String file : files) {
             LibFactory libFactory = createLibFactory(file);
             BaseBookWorker library = libFactory.createLib();
             List<Book> allBooks = library.returnAllBook(new File(file));
             for(Book book : allBooks){
                 if (id == book.getId()) {
-                    if(book.getDate().isEmpty()){
+                    if(book.getDate() == null){
                         book.setSubscriber(abonent);
-                        book.setDate(formatter.format(new Date()));
+                        book.setDate(new Date());
                         library.writeChanges(file, allBooks);
-                        find = true;
-                        System.out.println("OK " + "abonent=" + abonent + " date=" + formatter.format(new Date()));
+                        return String.format(LocaleResource.getString("message.orderOk"), abonent, formatter.format(new Date()));
                     } else {
-                        find = true;
-                        System.out.println("RESERVED "+ "abonent=" + book.getSubscriber() + " date=" + formatter.format(new Date()));
+                        return String.format(LocaleResource.getString("message.reserved"), book.getSubscriber(), formatter.format(new Date()));
                     }
-                    break a;
                 }
             }
         }
-        if(!find){
-            System.out.println("NOT FOUND");
-        }
+        return LocaleResource.getString("message.notfound");
     }
 
-    public void returnBook(int id){
+    public String returnBook(int id){
         File F = new File(PATH_TO_LIBRARY);
-        boolean find = false;
         ArrayList<String> files = returnAllFilesFromFolder(F, new ArrayList<>());
-        a: for(String file : files) {
+        for(String file : files) {
             LibFactory libFactory = createLibFactory(file);
             BaseBookWorker library = libFactory.createLib();
             List<Book> allBooks = library.returnAllBook(new File(file));
             for(Book book : allBooks){
                 if (id == book.getId()) {
-                    if(!book.getDate().isEmpty()){
-                        System.out.println("OK " + book.print(new String[]{"abonent"}));
+                    if(book.getDate() != null){
+                        String sub = book.getSubscriber();
                         book.setSubscriber("");
-                        book.setDate("");
+                        book.setDate(null);
                         library.writeChanges(file, allBooks);
-                        find = true;
+                        return String.format(LocaleResource.getString("message.returnOk"), sub);
                     } else {
-                        find = true;
-                        System.out.println("ALREADY RETURNED");
+                        return LocaleResource.getString("message.alreadyReturned");
                     }
-                    break a;
                 }
             }
         }
-        if(!find){
-            System.out.println("NOT FOUND");
-        }
+        return LocaleResource.getString("message.notfound");
     }
 
     private ArrayList<Book> processFilesFromFolder(File folder, ArrayList<Book> books) {
@@ -133,5 +124,12 @@ public class Librarians {
         } else {
             throw new RuntimeException(typeFile + " is unknown typeFile.");
         }
+    }
+
+    private boolean contains(String str, String searchString){
+        if(searchString == null){
+            return true;
+        }
+        return str.contains(searchString);
     }
 }

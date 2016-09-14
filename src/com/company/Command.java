@@ -1,7 +1,13 @@
 package com.company;
 
-import java.util.List;
+import java.util.Map;
 
-public interface Command {
-    void execute(List<String> params);
+public abstract class Command {
+    Map<String, String> params;
+    void init(Map<String, String> params){
+        this.params = params;
+    }
+    abstract boolean verify();
+    abstract String execute();
+
 }

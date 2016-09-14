@@ -5,27 +5,30 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Map<String,Command> mapOFCommands = new HashMap<>();
-        mapOFCommands.put("FIND", new FindCommand());
-        mapOFCommands.put("ORDER", new OrderCommand());
-        mapOFCommands.put("RETURN", new ReturnCommand());
-        mapOFCommands.put("EXIT", new ExitCommand());
+        mapOFCommands.put(LocaleResource.getString("command.find"), new FindCommand());
+        mapOFCommands.put(LocaleResource.getString("command.order"), new OrderCommand());
+        mapOFCommands.put(LocaleResource.getString("command.return"), new ReturnCommand());
+        mapOFCommands.put(LocaleResource.getString("command.exit"), new ExitCommand());
 
 
         System.out.println(LocaleResource.getString("message.placeForCommand"));
         try(Scanner in = new Scanner(System.in);) {
             while (true) {
                 StringTokenizer line= new StringTokenizer(in.nextLine(), " ");
-                Commands command = new Commands();
+                CommandInterpreter interpreter = new CommandInterpreter();
                 String request = line.nextToken();
                 if(mapOFCommands.get(request) == null){
                     System.out.println(LocaleResource.getString("message.syntaxError"));
                 } else {
-                    command.setCommand(mapOFCommands.get(request));
-                    List<String> params = new ArrayList<>();
+                    interpreter.setCommand(mapOFCommands.get(request));
+                    Map<String, String> params = new HashMap<>();
+                    String [] param;
                     while (line.hasMoreElements()) {
-                        params.add(line.nextToken());
+                        param = line.nextToken().split("=");
+                        params.put(param[0], param[1]);
                     }
-                    command.executeCommand(params);
+                    interpreter.initCommand(params);
+                    interpreter.executeCommand();
                 }
             }
         } catch (InputMismatchException e){

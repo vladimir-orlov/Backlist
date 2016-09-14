@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Book {
 
-    Book(String library, int id, String author, String title, String date, String subscriber){
+    Book(String library, int id, String author, String title, Date date, String subscriber){
         this.library = library;
         this.id = id;
         this.author = author;
@@ -14,40 +14,15 @@ public class Book {
     }
 
     Book(String library, int id, String author, String title){
-        this(library, id, author, title, "", "");
+        this(library, id, author, title, null, null);
     }
 
     private int id;
     private String author;
     private String title;
-    private String date;
+    private Date date;
     private String subscriber;
     private String library;
-
-    private Map getMapOfFields(){
-        Map fields = new HashMap();
-        fields.put("id", id);
-        fields.put("name", author);
-        fields.put("title", title);
-        fields.put("issued", date);
-        fields.put("abonent", subscriber);
-        fields.put("lib", library);
-        return fields;
-    }
-
-    public String print(String... params){
-        StringBuilder sb = new StringBuilder();
-        Map map = new HashMap(getMapOfFields());
-        for(String param : params){
-            if(map.containsKey(param)){
-                sb.append(param + "=" + map.get(param));
-                sb.append(" ");
-            } else {
-                return "Wrong argument:" + param;
-            }
-        }
-        return sb.toString();
-    }
 
     public String toString(){
         return "lib:"+library+"; id:"+id+"; author:"+author+"; title:"+title+"; date:"+date+"; sub:"+subscriber;
@@ -65,7 +40,7 @@ public class Book {
         return title;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -73,7 +48,11 @@ public class Book {
         return subscriber;
     }
 
-    public void setDate(String date) {
+    public String getLibrary() {
+        return library;
+    }
+
+    public void setDate(Date date) {
         this.date = date;
     }
 

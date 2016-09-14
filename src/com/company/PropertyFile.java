@@ -4,11 +4,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 public class PropertyFile implements BaseBookWorker {
+    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
+
     @Override
     public List<Book> returnAllBook(File propertyFile) {
         List<Book> book = new ArrayList<>();
@@ -19,11 +24,13 @@ public class PropertyFile implements BaseBookWorker {
             int id = Integer.parseInt(property.getProperty("Index"));
             String author = property.getProperty("Author");
             String title = property.getProperty("Name");
-            String date = property.getProperty("Issued");
+            Date date = formatter.parse(property.getProperty("Issued"));
             String subscriber = property.getProperty("Issuedto");
             book.add(new Book(propertyFile.getParent(), id, author, title, date, subscriber));
         } catch (IOException e) {
             System.out.println("Problem with reading .property file:");
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return book;
@@ -40,8 +47,8 @@ public class PropertyFile implements BaseBookWorker {
         builder.append("Index="+book.getId()+"\n");
         builder.append("Author="+book.getAuthor()+"\n");
         builder.append("Name="+book.getTitle()+"\n");
-        builder.append("Issued="+book.getDate()+"\n");
-        builder.append("Issuedto="+book.getSubscriber());
+        builder.append("Issued="+book.getDate() == null ? "" : book.getDate()+"\n");
+        builder.append("Issuedto="+book.getSubscriber() == null ? "" : formatter.format(book.getSubscriber()));
 
         try(PrintWriter out = new PrintWriter(new File(filename).getAbsoluteFile())){
             out.print(builder.toString());
