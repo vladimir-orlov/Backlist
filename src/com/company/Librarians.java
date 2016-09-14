@@ -15,27 +15,25 @@ import java.util.regex.Pattern;
 //Совершенный код
 
 public class Librarians {
-    private static final String PATH_TO_LIBRARY = "Library";
-
     public String findBook(String author, String name){
-        File file = new File(PATH_TO_LIBRARY);
+        File file = new File(Consts.PATH_TO_LIBRARY);
         ArrayList<Book> books = processFilesFromFolder(file,  new ArrayList<Book>());
+        StringBuilder sb = new StringBuilder();
 
         for(Book book : books) {
             if (contains(book.getAuthor(), author) && contains(book.getTitle(), name)) {
               if(book.getDate() == null){
-                  return String.format(LocaleResource.getString("message.found"), book.getId(), book.getLibrary());
+                  sb.append(String.format(LocaleResource.getString("message.found"), book.getId(), book.getLibrary()));
               } else {
-                  return String.format(LocaleResource.getString("message.foundmissing"), book.getId(), book.getLibrary(), book.getDate());
+                  sb.append(String.format(LocaleResource.getString("message.foundmissing"), book.getId(), book.getLibrary(), book.getDate()));
               }
             }
         }
-        return String.format(LocaleResource.getString("message.notfound"));
+        return sb.length() > 0 ? sb.toString() : LocaleResource.getString("message.notfound");
     }
 
     public String orderBook(int id, String abonent){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
-        File F = new File(PATH_TO_LIBRARY);
+        File F = new File(Consts.PATH_TO_LIBRARY);
         ArrayList<String> files = returnAllFilesFromFolder(F,  new ArrayList<String>());
         for(String file : files) {
             LibFactory libFactory = createLibFactory(file);
@@ -47,9 +45,9 @@ public class Librarians {
                         book.setSubscriber(abonent);
                         book.setDate(new Date());
                         library.writeChanges(file, allBooks);
-                        return String.format(LocaleResource.getString("message.orderOk"), abonent, formatter.format(new Date()));
+                        return String.format(LocaleResource.getString("message.orderOk"), abonent, Consts.dateFormatter.format(new Date()));
                     } else {
-                        return String.format(LocaleResource.getString("message.reserved"), book.getSubscriber(), formatter.format(new Date()));
+                        return String.format(LocaleResource.getString("message.reserved"), book.getSubscriber(), Consts.dateFormatter.format(new Date()));
                     }
                 }
             }
@@ -58,7 +56,7 @@ public class Librarians {
     }
 
     public String returnBook(int id){
-        File F = new File(PATH_TO_LIBRARY);
+        File F = new File(Consts.PATH_TO_LIBRARY);
         ArrayList<String> files = returnAllFilesFromFolder(F, new ArrayList<>());
         for(String file : files) {
             LibFactory libFactory = createLibFactory(file);

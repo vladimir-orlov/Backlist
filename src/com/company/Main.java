@@ -5,11 +5,10 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Map<String,Command> mapOFCommands = new HashMap<>();
-        mapOFCommands.put(LocaleResource.getString("command.find"), new FindCommand());
-        mapOFCommands.put(LocaleResource.getString("command.order"), new OrderCommand());
-        mapOFCommands.put(LocaleResource.getString("command.return"), new ReturnCommand());
-        mapOFCommands.put(LocaleResource.getString("command.exit"), new ExitCommand());
-
+        mapOFCommands.put(Consts.FIND, new FindCommand());
+        mapOFCommands.put(Consts.ORDER, new OrderCommand());
+        mapOFCommands.put(Consts.RETURN, new ReturnCommand());
+        mapOFCommands.put(Consts.EXIT, new ExitCommand());
 
         System.out.println(LocaleResource.getString("message.placeForCommand"));
         try(Scanner in = new Scanner(System.in);) {
