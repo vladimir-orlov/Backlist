@@ -3,16 +3,11 @@ package com.company;
 public class ExitCommand extends Command {
     @Override
     boolean verify() {
-        if(params.size() == 0){
-            return true;
-        }
-        return false;
+        return params.size() == 0 ;
     }
 
     @Override
-    String execute() {
-
-        //TODO throw
-        return "Exit";
+    String execute() throws ExitException {
+        throw new ExitException(LocaleResource.getString("message.exit"));
     }
 }

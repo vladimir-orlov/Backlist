@@ -13,13 +13,11 @@ public class CommandInterpreter {
         command.init(params);
     }
 
-    public void executeCommand(){
-        if(!command.verify()){
-           //TODO - sout
-            //TODO throw exception
-            System.out.println(LocaleResource.getString("message.syntaxError"));
+    public String executeCommand() throws SyntaxException, ExitException {
+        if(command.verify()){
+            return command.execute();
         } else {
-            command.execute();
+            throw new SyntaxException();
         }
     }
 }

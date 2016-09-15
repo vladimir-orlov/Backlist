@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,15 +9,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//Возвращать значения
-//Константы
-//Вынести методы
-//Выкидывать ошибку
-//Совершенный код
+//loger + levels
+//package
+//Book - vision
+//Exception for people
+//Constants
+//new parser csv
 
 public class Librarians {
     public String findBook(String author, String name){
-        File file = new File(Consts.PATH_TO_LIBRARY);
+        File file = new File(Constants.PATH_TO_LIBRARY);
         ArrayList<Book> books = processFilesFromFolder(file,  new ArrayList<Book>());
         StringBuilder sb = new StringBuilder();
 
@@ -25,7 +27,7 @@ public class Librarians {
               if(book.getDate() == null){
                   sb.append(String.format(LocaleResource.getString("message.found"), book.getId(), book.getLibrary()));
               } else {
-                  sb.append(String.format(LocaleResource.getString("message.foundmissing"), book.getId(), book.getLibrary(), book.getDate()));
+                  sb.append(String.format(LocaleResource.getString("message.foundmissing"), book.getId(), book.getLibrary(), convertDateToString(book.getDate())));
               }
             }
         }
@@ -33,7 +35,7 @@ public class Librarians {
     }
 
     public String orderBook(int id, String abonent){
-        File F = new File(Consts.PATH_TO_LIBRARY);
+        File F = new File(Constants.PATH_TO_LIBRARY);
         ArrayList<String> files = returnAllFilesFromFolder(F,  new ArrayList<String>());
         for(String file : files) {
             LibFactory libFactory = createLibFactory(file);
@@ -45,9 +47,9 @@ public class Librarians {
                         book.setSubscriber(abonent);
                         book.setDate(new Date());
                         library.writeChanges(file, allBooks);
-                        return String.format(LocaleResource.getString("message.orderOk"), abonent, Consts.dateFormatter.format(new Date()));
+                        return String.format(LocaleResource.getString("message.orderOk"), abonent, convertDateToString(new Date()));
                     } else {
-                        return String.format(LocaleResource.getString("message.reserved"), book.getSubscriber(), Consts.dateFormatter.format(new Date()));
+                        return String.format(LocaleResource.getString("message.reserved"), book.getSubscriber(), convertDateToString(new Date()));
                     }
                 }
             }
@@ -56,7 +58,7 @@ public class Librarians {
     }
 
     public String returnBook(int id){
-        File F = new File(Consts.PATH_TO_LIBRARY);
+        File F = new File(Constants.PATH_TO_LIBRARY);
         ArrayList<String> files = returnAllFilesFromFolder(F, new ArrayList<>());
         for(String file : files) {
             LibFactory libFactory = createLibFactory(file);
@@ -66,7 +68,7 @@ public class Librarians {
                 if (id == book.getId()) {
                     if(book.getDate() != null){
                         String sub = book.getSubscriber();
-                        book.setSubscriber("");
+                        book.setSubscriber(null);
                         book.setDate(null);
                         library.writeChanges(file, allBooks);
                         return String.format(LocaleResource.getString("message.returnOk"), sub);
@@ -120,14 +122,30 @@ public class Librarians {
         } else if(typeFile.equalsIgnoreCase(".properties")){
             return new JavaPropertyFactory();
         } else {
+            //TODO custom exception for problems with reading file
             throw new RuntimeException(typeFile + " is unknown typeFile.");
         }
     }
 
     private boolean contains(String str, String searchString){
-        if(searchString == null){
-            return true;
+        return  searchString == null ? true : str.contains(searchString);
+    }
+
+    public static Date convertStringToDate(String str) {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy.MM.dd");
+        Date date = null;
+        try {
+            if(str != null && !str.isEmpty()) {
+                date = dateFormatter.parse(str);
+            }
+        } catch (ParseException e){
+            System.out.println(LocaleResource.getString("message.problemsParse"));
+            e.printStackTrace();
         }
-        return str.contains(searchString);
+        return date;
+    }
+    public static String convertDateToString(Date date){
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy.MM.dd");
+        return date == null ? "" : dateFormatter.format(date);
     }
 }

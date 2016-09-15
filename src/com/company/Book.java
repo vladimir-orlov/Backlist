@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Book {
 
-    Book(String library, int id, String author, String title, Date date, String subscriber){
+    public Book(String library, int id, String author, String title, Date date, String subscriber){
         this.library = library;
         this.id = id;
         this.author = author;
@@ -13,7 +13,7 @@ public class Book {
         this.subscriber = subscriber;
     }
 
-    Book(String library, int id, String author, String title){
+    public Book(String library, int id, String author, String title){
         this(library, id, author, title, null, null);
     }
 
@@ -24,8 +24,16 @@ public class Book {
     private String subscriber;
     private String library;
 
-    public String toString(){
-        return "lib:"+library+"; id:"+id+"; author:"+author+"; title:"+title+"; date:"+date+"; sub:"+subscriber;
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", author='" + author + '\'' +
+                ", title='" + title + '\'' +
+                ", date=" + date +
+                ", subscriber='" + subscriber + '\'' +
+                ", library='" + library + '\'' +
+                '}';
     }
 
     public int getId() {

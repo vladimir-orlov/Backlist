@@ -8,6 +8,6 @@ public abstract class Command {
         this.params = params;
     }
     abstract boolean verify();
-    abstract String execute();
+    abstract String execute() throws ExitException;
 
 }

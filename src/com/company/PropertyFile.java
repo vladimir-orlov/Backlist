@@ -4,16 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 public class PropertyFile implements BaseBookWorker {
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
-
     @Override
     public List<Book> returnAllBook(File propertyFile) {
         List<Book> book = new ArrayList<>();
@@ -21,17 +17,15 @@ public class PropertyFile implements BaseBookWorker {
 
         try(FileInputStream fis = new FileInputStream(propertyFile)) {
             property.load(fis);
-            int id = Integer.parseInt(property.getProperty("Index"));
-            String author = property.getProperty("Author");
-            String title = property.getProperty("Name");
-            Date date = formatter.parse(property.getProperty("Issued"));
-            String subscriber = property.getProperty("Issuedto");
+            int id = Integer.parseInt(property.getProperty(Constants.PROPERTY_INDEX));
+            String author = property.getProperty(Constants.PROPERTY_AUTHOR);
+            String title = property.getProperty(Constants.PROPERTY_TITLE);
+            Date date = Librarians.convertStringToDate(property.getProperty(Constants.PROPERTY_DATE));
+            String subscriber = property.getProperty(Constants.PROPERTY_SUBSCRIBER);
             book.add(new Book(propertyFile.getParent(), id, author, title, date, subscriber));
         } catch (IOException e) {
             System.out.println("Problem with reading .property file:");
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return book;
     }
@@ -44,17 +38,20 @@ public class PropertyFile implements BaseBookWorker {
         StringBuilder builder = new StringBuilder();
         Book book = books.get(0);
 
-        builder.append("Index="+book.getId()+"\n");
-        builder.append("Author="+book.getAuthor()+"\n");
-        builder.append("Name="+book.getTitle()+"\n");
-        builder.append("Issued="+book.getDate() == null ? "" : book.getDate()+"\n");
-        builder.append("Issuedto="+book.getSubscriber() == null ? "" : formatter.format(book.getSubscriber()));
+        builder.append(Constants.PROPERTY_INDEX +"="+book.getId()+"\n");
+        builder.append(Constants.PROPERTY_AUTHOR+"="+book.getAuthor()+"\n");
+        builder.append(Constants.PROPERTY_TITLE+"="+book.getTitle()+"\n");
+        builder.append(Constants.PROPERTY_DATE+"="+ Librarians.convertDateToString(book.getDate())+"\n");
+        builder.append(Constants.PROPERTY_SUBSCRIBER+"="+ book.getSubscriber() == null ? "" : book.getSubscriber());
 
         try(PrintWriter out = new PrintWriter(new File(filename).getAbsoluteFile())){
             out.print(builder.toString());
         } catch (IOException e) {
             System.out.println("Problem with writing to .property file:");
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
+
+
+
 }
