@@ -47,7 +47,7 @@ public class Main {
                param = line.nextToken().split("=");
                params.put(param[0], param[1]);
            } catch (ArrayIndexOutOfBoundsException e){
-               throw new SyntaxException(param);
+               throw new SyntaxException();
            }
         }
         return params;

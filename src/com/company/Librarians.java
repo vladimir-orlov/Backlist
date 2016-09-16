@@ -1,5 +1,9 @@
 package com.company;
 
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,6 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 //loger + levels
 //package
 //Book - vision
@@ -17,6 +22,8 @@ import java.util.regex.Pattern;
 //new parser csv
 
 public class Librarians {
+    static final Logger logger = LogManager.getLogger(Librarians.class.getName());
+
     public String findBook(String author, String name){
         File file = new File(Constants.PATH_TO_LIBRARY);
         ArrayList<Book> books = processFilesFromFolder(file,  new ArrayList<Book>());
@@ -28,6 +35,9 @@ public class Librarians {
                   sb.append(String.format(LocaleResource.getString("message.found"), book.getId(), book.getLibrary()));
               } else {
                   sb.append(String.format(LocaleResource.getString("message.foundmissing"), book.getId(), book.getLibrary(), convertDateToString(book.getDate())));
+                  logger.trace("Entering Log4j Example.");
+                  logger.error("Entering Log4j Example.");
+                  logger.entry("Entering Log4j Example.");
               }
             }
         }
