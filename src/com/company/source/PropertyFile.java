@@ -1,15 +1,25 @@
-package com.company;
+package com.company.source;
+
+import com.company.core.Book;
+import com.company.core.Constants;
+import com.company.core.Librarians;
+import com.company.core.LocaleResource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 public class PropertyFile implements BaseBookWorker {
+    static final Logger logger = LogManager.getLogger(PropertyFile.class);
+
     @Override
     public List<Book> returnAllBook(File propertyFile) {
         List<Book> book = new ArrayList<>();
@@ -24,8 +34,11 @@ public class PropertyFile implements BaseBookWorker {
             String subscriber = property.getProperty(Constants.PROPERTY_SUBSCRIBER);
             book.add(new Book(propertyFile.getParent(), id, author, title, date, subscriber));
         } catch (IOException e) {
-            System.out.println("Problem with reading .property file:");
-//            e.printStackTrace();
+            logger.error(LocaleResource.getString("message.problemWithReading", propertyFile.getAbsolutePath()));
+        } catch (ParseException e) {
+            logger.error(LocaleResource.getString("message.wrongDateProperties",  propertyFile.getAbsolutePath()));
+        } catch (NumberFormatException e){
+            logger.error(LocaleResource.getString("message.wrongIdProperties", propertyFile.getAbsolutePath()));
         }
         return book;
     }
@@ -33,7 +46,7 @@ public class PropertyFile implements BaseBookWorker {
     @Override
     public void writeChanges(String filename, List<Book> books) {
         if(books.size() > 1){
-            System.out.println("Too many elements for this object.");
+            logger.error(LocaleResource.getString("message.manyElements"));
         }
         StringBuilder builder = new StringBuilder();
         Book book = books.get(0);
@@ -47,11 +60,7 @@ public class PropertyFile implements BaseBookWorker {
         try(PrintWriter out = new PrintWriter(new File(filename).getAbsoluteFile())){
             out.print(builder.toString());
         } catch (IOException e) {
-            System.out.println("Problem with writing to .property file:");
-//            e.printStackTrace();
+            logger.error(LocaleResource.getString("message.problemWithWriting", filename));
         }
     }
-
-
-
 }

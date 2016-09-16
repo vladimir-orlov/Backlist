@@ -1,4 +1,4 @@
-package com.company;
+package com.company.core;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -17,5 +17,9 @@ public class LocaleResource {
             resource = new LocaleResource();
         }
         return resource.res.getString(key);
+    }
+
+    public static String getString(String key, Object... args){
+        return String.format(key, args);
     }
 }

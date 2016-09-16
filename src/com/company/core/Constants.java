@@ -1,6 +1,4 @@
-package com.company;
-
-import java.text.SimpleDateFormat;
+package com.company.core;
 
 public final class Constants {
     private Constants(){
@@ -24,6 +22,11 @@ public final class Constants {
     public static final String PROPERTY_TITLE = "Name";
     public static final String PROPERTY_DATE = "Issued";
     public static final String PROPERTY_SUBSCRIBER = "Issuedto";
+
+    public static final String EXTENSION_CSV = ".csv";
+    public static final String EXTENSION_PROPERTY = ".properties";
+
+
 
 
 

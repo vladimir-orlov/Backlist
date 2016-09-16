@@ -1,4 +1,7 @@
-package com.company;
+package com.company.comands;
+
+import com.company.core.Constants;
+import com.company.core.Librarians;
 
 public class FindCommand extends Command {
     @Override

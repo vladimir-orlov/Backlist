@@ -1,4 +1,6 @@
-package com.company;
+package com.company.comands;
+
+import com.company.core.LocaleResource;
 
 public class ExitCommand extends Command {
     @Override

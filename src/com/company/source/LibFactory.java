@@ -1,4 +1,4 @@
-package com.company;
+package com.company.source;
 
 public interface LibFactory {
     BaseBookWorker createLib();

@@ -1,9 +1,18 @@
 package com.company;
 
+import com.company.comands.*;
+import com.company.core.Constants;
+import com.company.core.Librarians;
+import com.company.core.LocaleResource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+        final Logger logger = LogManager.getLogger(Librarians.class);
+
         Map<String,Command> mapOFCommands = new HashMap<>();
         mapOFCommands.put(Constants.FIND, new FindCommand());
         mapOFCommands.put(Constants.ORDER, new OrderCommand());
@@ -26,7 +35,7 @@ public class Main {
                         System.out.println(interpreter.executeCommand());
                     }
                 } catch (SyntaxException e){
-                    System.out.println(LocaleResource.getString("message.syntaxError"));
+                    System.out.println(e.getMessage());
                 }
                 catch (NoSuchElementException e){
                     System.out.println(LocaleResource.getString("message.badPattern"));
@@ -47,7 +56,7 @@ public class Main {
                param = line.nextToken().split("=");
                params.put(param[0], param[1]);
            } catch (ArrayIndexOutOfBoundsException e){
-               throw new SyntaxException();
+               throw new SyntaxException(LocaleResource.getString("message.badPatternCommand"));
            }
         }
         return params;

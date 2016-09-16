@@ -1,4 +1,6 @@
-package com.company;
+package com.company.comands;
+
+import com.company.core.LocaleResource;
 
 import java.util.Map;
 
@@ -17,7 +19,7 @@ public class CommandInterpreter {
         if(command.verify()){
             return command.execute();
         } else {
-            throw new SyntaxException();
+            throw new SyntaxException(LocaleResource.getString("message.syntaxErrorCommand", command.params.toString()));
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.company;
+package com.company.comands;
 
 import java.util.Map;
 

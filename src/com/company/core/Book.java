@@ -1,4 +1,4 @@
-package com.company;
+package com.company.core;
 
 import java.util.*;
 
@@ -11,10 +11,6 @@ public class Book {
         this.title = title;
         this.date = date;
         this.subscriber = subscriber;
-    }
-
-    public Book(String library, int id, String author, String title){
-        this(library, id, author, title, null, null);
     }
 
     private int id;

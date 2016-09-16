@@ -1,4 +1,4 @@
-package com.company;
+package com.company.comands;
 
 public class SyntaxException extends Exception {
     public SyntaxException(){
