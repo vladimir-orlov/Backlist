@@ -12,4 +12,9 @@ public class ExitCommand extends Command {
     String execute() throws ExitException {
         throw new ExitException(LocaleResource.getString("message.exit"));
     }
+
+    @Override
+    public String toString() {
+        return LocaleResource.getString("command.exit");
+    }
 }
