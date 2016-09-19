@@ -34,11 +34,11 @@ public class PropertyFile implements BaseBookWorker {
             String subscriber = property.getProperty(Constants.PROPERTY_SUBSCRIBER);
             book.add(new Book(propertyFile.getParent(), id, author, title, date, subscriber));
         } catch (IOException e) {
-            logger.error(LocaleResource.getString("message.problemWithReading", propertyFile.getAbsolutePath()));
+            logger.debug(LocaleResource.getString("message.problemWithReading", propertyFile.getAbsolutePath()));
         } catch (ParseException e) {
-            logger.error(LocaleResource.getString("message.wrongDateProperties",  propertyFile.getAbsolutePath()));
+            logger.debug(LocaleResource.getString("message.wrongDateProperties",  propertyFile.getAbsolutePath()));
         } catch (NumberFormatException e){
-            logger.error(LocaleResource.getString("message.wrongIdProperties", propertyFile.getAbsolutePath()));
+            logger.debug(LocaleResource.getString("message.wrongIdProperties", propertyFile.getAbsolutePath()));
         }
         return book;
     }
@@ -46,7 +46,7 @@ public class PropertyFile implements BaseBookWorker {
     @Override
     public void writeChanges(String filename, List<Book> books) {
         if(books.size() > 1){
-            logger.error(LocaleResource.getString("message.manyElements"));
+            logger.debug(LocaleResource.getString("message.manyElements"));
         }
         StringBuilder builder = new StringBuilder();
         Book book = books.get(0);
@@ -60,7 +60,7 @@ public class PropertyFile implements BaseBookWorker {
         try(PrintWriter out = new PrintWriter(new File(filename).getAbsoluteFile())){
             out.print(builder.toString());
         } catch (IOException e) {
-            logger.error(LocaleResource.getString("message.problemWithWriting", filename));
+            logger.debug(LocaleResource.getString("message.problemWithWriting", filename));
         }
     }
 }

@@ -23,9 +23,9 @@ public class Librarians {
         for(Book book : books) {
             if (containsSearchString(book.getAuthor(), author) && containsSearchString(book.getTitle(), name)) {
               if(book.getDate() == null){
-                  sb.append(String.format(LocaleResource.getString("message.found"), book.getId(), book.getLibrary()));
+                  sb.append(LocaleResource.getString("message.found", book.getId(), book.getLibrary()));
               } else {
-                  sb.append(String.format(LocaleResource.getString("message.foundmissing"), book.getId(), book.getLibrary(), convertDateToString(book.getDate())));
+                  sb.append(LocaleResource.getString("message.foundmissing", book.getId(), book.getLibrary(), convertDateToString(book.getDate())));
               }
             }
         }
@@ -46,14 +46,14 @@ public class Librarians {
                             book.setSubscriber(abonent);
                             book.setDate(new Date());
                             library.writeChanges(file, allBooks);
-                            return String.format(LocaleResource.getString("message.orderOk"), abonent, convertDateToString(new Date()));
+                            return LocaleResource.getString("message.orderOk", abonent, convertDateToString(new Date()));
                         } else {
-                            return String.format(LocaleResource.getString("message.reserved"), book.getSubscriber(), convertDateToString(new Date()));
+                            return LocaleResource.getString("message.reserved", book.getSubscriber(), convertDateToString(new Date()));
                         }
                     }
                 }
             } catch (FileExtensionException e){
-                logger.error(e.getMessage());
+                logger.debug(e.getMessage());
             }
         }
         return LocaleResource.getString("message.notfound");
@@ -74,14 +74,14 @@ public class Librarians {
                            book.setSubscriber(null);
                            book.setDate(null);
                            library.writeChanges(file, allBooks);
-                           return String.format(LocaleResource.getString("message.returnOk"), sub);
+                           return LocaleResource.getString("message.returnOk", sub);
                        } else {
                            return LocaleResource.getString("message.alreadyReturned");
                        }
                    }
                }
            } catch (FileExtensionException e){
-               logger.error(e.getMessage());
+               logger.debug(e.getMessage());
            }
         }
         return LocaleResource.getString("message.notfound");
@@ -101,7 +101,7 @@ public class Librarians {
                 BaseBookWorker library = libFactory.createLib();
                 books.addAll(library.returnAllBook(entry));
             } catch (FileExtensionException e) {
-                logger.error(e.getMessage());
+                logger.debug(e.getMessage());
             }
         }
         return books;
@@ -132,7 +132,7 @@ public class Librarians {
         } else if(typeFile.equalsIgnoreCase(Constants.EXTENSION_PROPERTY)){
             return new JavaPropertyFactory();
         } else {
-            throw new FileExtensionException(String.format(LocaleResource.getString("message.unknownType"), file));
+            throw new FileExtensionException(LocaleResource.getString("message.unknownType", file));
         }
     }
 

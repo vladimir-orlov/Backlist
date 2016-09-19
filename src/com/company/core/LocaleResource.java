@@ -20,6 +20,6 @@ public class LocaleResource {
     }
 
     public static String getString(String key, Object... args){
-        return String.format(key, args);
+        return String.format(getString(key), args);
     }
 }

@@ -26,13 +26,13 @@ public class CsvFile implements BaseBookWorker {
                  books.add(new Book(csvFile.getParent(), Integer.parseInt(nextToken(book)), nextToken(book),
                          nextToken(book), Librarians.convertStringToDate(nextToken(book)), nextToken(book)));
              } catch (ParseException e){
-                 logger.error(LocaleResource.getString("message.wrongDateCsv", csvFile.getName(), line));
+                 logger.debug(LocaleResource.getString("message.wrongDateCsv", csvFile.getName(), line));
              } catch (NumberFormatException e){
-                 logger.error(LocaleResource.getString("message.wrongIdCsv", csvFile.getName(), line));
+                 logger.debug(LocaleResource.getString("message.wrongIdCsv", csvFile.getName(), line));
              }
             }
         } catch (IOException e) {
-            logger.error(LocaleResource.getString("message.problemWithReading", csvFile.getName()));
+            logger.debug(LocaleResource.getString("message.problemWithReading", csvFile.getName()));
         }
         return books;
     }
@@ -55,7 +55,7 @@ public class CsvFile implements BaseBookWorker {
         try(PrintWriter out = new PrintWriter(new File(filename).getAbsoluteFile())){
             out.print(builder.toString());
         } catch (IOException e) {
-            logger.error(LocaleResource.getString("message.problemWithWriting", filename));
+            logger.debug(LocaleResource.getString("message.problemWithWriting", filename));
         }
     }
 }

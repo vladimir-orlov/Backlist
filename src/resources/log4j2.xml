@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <Console name="CONSOLE" target="SYSTEM_OUT">
+        <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
             <!--<PatternLayout pattern="%d %-7level %logger{36} - %msg%n"/>-->
         </Console>
@@ -10,13 +10,11 @@
         </File>
     </Appenders>
     <Loggers>
-        <!--<Root level="error">-->
-            <!--<AppenderRef ref="Console" />-->
-        <!--</Root>-->
-        <logger name="company.com" level="TRACE" />
-        <Root level="ERROR">
-            <AppenderRef ref="CONSOLE" level="error"/>
-            <AppenderRef ref="MyFile" level="trace" />
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Root level="debug">
+            <AppenderRef ref="MyFile"/>
         </Root>
     </Loggers>
 </Configuration>

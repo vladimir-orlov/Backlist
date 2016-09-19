@@ -19,7 +19,7 @@ public class CommandInterpreter {
         if(command.verify()){
             return command.execute();
         } else {
-            throw new SyntaxException(LocaleResource.getString("message.syntaxErrorCommand") + command.toString());
+            throw new SyntaxException(LocaleResource.getString("message.syntaxErrorCommand") + command);
         }
     }
 }

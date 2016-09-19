@@ -19,15 +19,15 @@ public class Main {
         mapOFCommands.put(Constants.RETURN, new ReturnCommand());
         mapOFCommands.put(Constants.EXIT, new ExitCommand());
 
-        System.out.println(LocaleResource.getString("message.placeForCommand"));
-        try(Scanner in = new Scanner(System.in);) {
+       logger.info(LocaleResource.getString("message.placeForCommand"));
+        try(Scanner in = new Scanner(System.in)) {
             while (true) {
                 try{
                     StringTokenizer line= new StringTokenizer(in.nextLine(), " ");
                     CommandInterpreter interpreter = new CommandInterpreter();
                     String request = line.nextToken();
                     if(mapOFCommands.get(request) == null){
-                        throw new SyntaxException();
+                        throw new SyntaxException(LocaleResource.getString("message.badPattern"));
                     } else {
                         interpreter.setCommand(mapOFCommands.get(request));
                         Map<String, String> params = collectionParametersToMap(line);
@@ -39,12 +39,13 @@ public class Main {
                 }
                 catch (NoSuchElementException e){
                     System.out.println(LocaleResource.getString("message.badPattern"));
-                    e.printStackTrace();
             }
         }
         } catch (ExitException e){
-            System.out.println(LocaleResource.getString("message.exit"));
+            logger.info(LocaleResource.getString("message.exit"));
             return;
+        } catch (Throwable e) {
+            logger.debug(LocaleResource.getString("unexpectedTermination"), e);
         }
     }
 
