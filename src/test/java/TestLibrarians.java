@@ -11,9 +11,8 @@ public class TestLibrarians {
     public void testFindBook(){
         Librarians librarians = new Librarians();
         assertEquals(LocaleResource.getString("message.notfound"), librarians.findBook("notfound", "notfound"));
-        assertEquals(LocaleResource.getString("message.foundmissing", 3000, "library/Test_Library", "2014.12.10"), librarians.findBook("TestAuthor1", "TestBook1"));
-        assertEquals(LocaleResource.getString("message.found", 3001, "library/Test_Library"), librarians.findBook("TestAuthor2", "TestBook2"));
-        assertEquals(LocaleResource.getString("message.found", 3001, "library/Test_Library"), librarians.findBook("TestAuthor2", "TestBook2"));
+        assertEquals(LocaleResource.getString("message.foundmissing", 3000, "library\\Test_Library", "2014.12.10"), librarians.findBook("TestAuthor1", "TestBook1"));
+        assertEquals(LocaleResource.getString("message.found", 3001, "library\\Test_Library"), librarians.findBook("TestAuthor2", "TestBook2"));
     }
 
     @Test
