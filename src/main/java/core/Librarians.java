@@ -18,7 +18,8 @@ public class Librarians {
 
     public String findBook(String author, String name){
         File file = new File(Constants.PATH_TO_LIBRARY);
-        ArrayList<Book> books = processFilesFromFolder(file,  new ArrayList<Book>());
+        ArrayList<Book> books  = processFilesFromFolder(file, new ArrayList<>());
+        books.addAll(DataBase.read());
         StringBuilder sb = new StringBuilder();
 
         for(Book book : books) {
@@ -57,6 +58,13 @@ public class Librarians {
                 logger.debug(e.getMessage());
             }
         }
+        Book book = DataBase.findByID(id);
+        if(book.getDate() != null){
+            book.setSubscriber(abonent);
+            book.setDate(new Date());
+            DataBase.update(book);
+            return LocaleResource.getString("message.orderOk", abonent, convertDateToString(new Date()));
+        }
         return LocaleResource.getString("message.notfound");
     }
 
@@ -84,6 +92,15 @@ public class Librarians {
            } catch (FileExtensionException e){
                logger.debug(e.getMessage());
            }
+        }
+
+        Book book = DataBase.findByID(id);
+        if(book.getDate() != null){
+            String sub = book.getSubscriber();
+            book.setSubscriber(null);
+            book.setDate(null);
+            DataBase.update(book);
+            return LocaleResource.getString("message.returnOk", sub);
         }
         return LocaleResource.getString("message.notfound");
     }

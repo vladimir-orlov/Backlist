@@ -1,11 +1,16 @@
 package core;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.*;
 @Entity
 @Table(name = "book")
 public class Book {
+
+    public Book() {
+    }
 
     public Book(String library, int id, String author, String title, Date date, String subscriber){
         this.library = library;
@@ -15,12 +20,17 @@ public class Book {
         this.date = date;
         this.subscriber = subscriber;
     }
-
-    private int id;
+    @Id
+    private Integer id;
+    @Column(name = "author")
     private String author;
+    @Column(name = "title")
     private String title;
+    @Column(name = "date")
     private Date date;
+    @Column(name = "subscriber")
     private String subscriber;
+    @Column(name = "library")
     private String library;
 
     @Override

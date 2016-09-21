@@ -13,4 +13,5 @@
         <property name="show_sql">false</property>
         <mapping class="core.Book"/>
     </session-factory>
+
 </hibernate-configuration>
