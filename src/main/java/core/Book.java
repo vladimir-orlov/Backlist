@@ -1,7 +1,10 @@
 package core;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.*;
-
+@Entity
+@Table(name = "book")
 public class Book {
 
     public Book(String library, int id, String author, String title, Date date, String subscriber){
@@ -62,5 +65,21 @@ public class Book {
 
     public void setSubscriber(String subscriber) {
         this.subscriber = subscriber;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setLibrary(String library) {
+        this.library = library;
     }
 }
