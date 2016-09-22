@@ -59,13 +59,18 @@ public class Librarians {
             }
         }
         Book book = DataBase.findByID(id);
-        if(book.getDate() != null){
+        if(book == null){
+            return LocaleResource.getString("message.notfound");
+        }
+        if(book.getDate() == null){
             book.setSubscriber(abonent);
             book.setDate(new Date());
             DataBase.update(book);
             return LocaleResource.getString("message.orderOk", abonent, convertDateToString(new Date()));
+        } else {
+            return LocaleResource.getString("message.reserved", book.getSubscriber(), convertDateToString(new Date()));
         }
-        return LocaleResource.getString("message.notfound");
+
     }
 
     public String returnBook(int id){
@@ -95,14 +100,19 @@ public class Librarians {
         }
 
         Book book = DataBase.findByID(id);
+        if(book == null){
+            return LocaleResource.getString("message.notfound");
+        }
+
         if(book.getDate() != null){
             String sub = book.getSubscriber();
             book.setSubscriber(null);
             book.setDate(null);
             DataBase.update(book);
             return LocaleResource.getString("message.returnOk", sub);
+        } else {
+            return LocaleResource.getString("message.alreadyReturned");
         }
-        return LocaleResource.getString("message.notfound");
     }
 
     private ArrayList<Book> processFilesFromFolder(File folder, ArrayList<Book> books) {
